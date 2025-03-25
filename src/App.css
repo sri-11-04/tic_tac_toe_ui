@@ -194,3 +194,114 @@
     transform: skew(0);
   }
 }
+
+/* note: min-width: 444px and max-width: 641px */
+@media screen and (min-width:444px) and (max-width:641px){
+  .welcome{
+    h1{
+      font-size: 4rem;
+    }
+    p{
+      font-size: 2rem;
+    }
+  }
+  .game-page{
+    form{
+      div{
+        width: 50%;
+        
+      }
+    }
+  }
+}
+
+/* note: max-width: 443px */
+@media screen and (max-width:443px){
+  .welcome{
+    h1{
+      font-size: 2.7rem;
+      letter-spacing: 1px;
+    }
+    p{
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+  }
+
+  .game-page{
+    .board{
+      grid-template-columns: repeat(3,80px);
+      grid-template-rows: repeat(3,80px);
+      button{
+        border-width: 2px;
+        /* border-color: green; */
+      }
+    }
+    .score{
+      p{
+        font-size: 0.9rem;
+        letter-spacing: 0.8px;
+      }
+    }
+    >div{
+      h1{
+        font-size: 1.6rem;
+        letter-spacing: 0.8px;
+      }
+      .retry-butt{
+        width: 90%;
+      }
+    }
+
+    form{
+      /* background-color: pink; */
+      div{
+        width: 85%;
+        input{
+          font-size: 0.8rem;
+          padding: 8px;
+        }
+        button{
+          font-size: 0.8rem;
+          padding: 6px 20px;
+        }
+      }
+    }
+  }
+
+  .bord-butt{
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+}
+
+/* note: max-width: 270px */
+@media screen and (max-width:330px){
+  .game-page{
+    >div{
+      .retry-butt{
+        button{
+          font-size: 0.7rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+  }
+  
+}
+
+
+/* note: max-width: 270px */
+@media screen and (max-width:270px){
+  .welcome{
+    h1{
+      font-size: 2.5rem;
+      line-height: 1.5;
+    }
+    p{
+      font-size: 1.3rem;
+    }
+  }
+  
+}

@@ -51,7 +51,15 @@ const Game = ({mode}) =>{
             // console.log('combo = ',combo)
             // console.log(`[${flag[a]},${flag[b]},${flag[c]}]`)
             if (flag[a] && flag[a] === flag[b] && flag[a] === flag[c]) {
-                return players.filter(ele=>ele.symbol === flag[a]); // Returns a arr of obj of X or O
+                buttons.forEach(butt=>{
+                    // console.log(butt.name)
+                    // console.log(typeof butt.name)
+                    if (combo.includes(parseInt(butt.name))){
+                        // console.log('butt correct ',butt.name)
+                        butt.style.backgroundColor = '#f9f8de';
+                    }
+                })
+                return players.filter(ele=>ele.symbol === flag[a]); // Returns a arr of obj of X or O   
             }
         }
         return null; // No winner yet
@@ -177,6 +185,7 @@ const Game = ({mode}) =>{
         buttons.forEach(butt=>{
             butt.innerText = ''
             butt.disabled = false
+            butt.style.backgroundColor = 'white'
         })
         setFlag(Array(9).fill(null))
         setTrackPlayer({[players[0].name]:[],[players[1].name]:[]})

@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Welcome from './Welcome'
-import { BrowserRouter as Router , Routes,Route } from 'react-router-dom'
+import { HashRouter as Router , Routes,Route } from 'react-router-dom'
 import Game from './Game'
 
 
