@@ -12,7 +12,9 @@ function App() {
   const [mode,setMode] = useState(null)
 
   const changeMode = (e)=>{
-    setMode(e.target.innerText)
+    // console.log('innerText = ',e.currentTarget.innerText)
+    // current target means it parent tag => to avoid the conflict of clicking the icon on the welcome page
+    setMode(e.currentTarget.innerText)
   }
 
   // console.log('mode = ',mode)

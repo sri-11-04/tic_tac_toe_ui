@@ -3,28 +3,41 @@
   font-family: 'poppins',sans-serif;
 }
 
+:root{
+  --color-x : #FF6347;
+  --color-o : #00FFFF;
+  --grid-border: #A020F0;
+}
+
 .welcome{
   padding: 100px 0 0;
   min-height: 100vh;
   text-align: center;
   text-transform: capitalize;
-  background-color: #1e1e1e;
+  background:black url(./assets/tic_tac_toe_img.png) no-repeat left fixed;
+  background-size: 500px;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   .link{
     text-decoration: none;
   }
   p,h1{
-  background: linear-gradient(to right, rgb(160, 131, 16), rgb(150, 138, 48),yellow);
+  background: linear-gradient(45deg, #FFFF00, rgb(173, 220, 239));
+  width: fit-content;
   background-clip: text;
   color: transparent;
   }
   h1{
-    text-shadow: 3px 4px 2px yellow;
     font-size: 5rem;
     letter-spacing: 2px;
     line-height: 2;
   }
   p{
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 3rem;
     line-height: 2;
     letter-spacing: 0.5px;
@@ -35,7 +48,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #1e1e1e;
+  background-color: #000000;
   color: white;
   position: relative;
   .form-move{
@@ -52,6 +65,7 @@
     h1{
       text-transform: uppercase;
       letter-spacing: 1.5px;
+      font-weight: 500;
     }
     .score{
       text-transform: uppercase;
@@ -60,6 +74,9 @@
       justify-content: space-between;
       gap: 100px;
       padding: 10px;
+      p span:last-child{
+        color: #FFFF00;
+      }
       /* width: 200px; */
     }
     .retry-butt{
@@ -79,10 +96,11 @@
         /* width: 100px; */
       }
       .first{
-        background-color: salmon;
+        background-color: var(--color-x);
       }
       .last{
-        background-color: green;
+        background-color: var(--color-o);
+        color: #1e1e1e;
       }
     }
   }
@@ -140,8 +158,11 @@
     button{
       height: 100%;
       aspect-ratio: 1;
-      background: white;
-      border: 3px solid black;
+      background: black;
+      border: 3px solid var(--grid-border);
+    }
+    button:active{
+      scale: unset;
     }
     :nth-child(1),:nth-child(4),:nth-child(7){
       border-left:none;
@@ -158,40 +179,60 @@
   }
 }
 
+select{
+  background-color: black;
+  color: #FFFF00;
+  border: none;
+  padding: 10px;
+  margin-top: -50px;
+  outline: none;
+}
+
 .bord-butt{
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 500;
   text-transform: uppercase;
 }
 
 .victory{
-  color: gold;
+  color: #39FF14;
 }
 
 .salmon{
-  color: salmon;
+  color: var(--color-x);
 }
 
 .green{
-  color: green;
+  color: var(--color-o);
 }
 
 .anime{
-  animation: anime 0.4s infinite;
+  animation: anime 2s infinite ease-in;
+}
+
+
+button:active{
+  scale: 0.976;
 }
 
 @keyframes anime {
   0% {
-    transform: skew(0);
+    box-shadow: 0 0 30px -30px var(--color-o);
   }
   25%{
-    transform: skew(6deg);
+    box-shadow: 0 0 30px -15px var(--color-o);
+  }
+  30%{
+    box-shadow: 0 0 30px 0px var(--color-o);
   }
   50% {
-    transform: skew(-6deg);
+    box-shadow: 0 0 30px -15px var(--color-o);
+  }
+  75%{
+    box-shadow: 0 0 30px 0px var(--color-o);
   }
   100% {
-    transform: skew(0);
+    box-shadow: 0 0 30px -30px var(--color-o);
   }
 }
 
@@ -216,8 +257,12 @@
 }
 
 /* note: max-width: 443px */
-@media screen and (max-width:443px){
+@media screen and (max-width:444px){
   .welcome{
+    background-position: 50% 400px;
+    background-size: 200px;
+    padding: unset;
+    justify-content: center;
     h1{
       font-size: 2.7rem;
       letter-spacing: 1px;
