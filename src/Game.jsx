@@ -114,17 +114,11 @@ const Game = ({mode}) =>{
     }
 
     // minimax algo
-    function minimax(alpha,beta,isMaximizing){
+    function minimax(flag,alpha,beta,isMaximizing){
         const winner = checkWinner(false)
         const draw = flag.every(ele => ele!== null)
-        if (winner){
-            let [win] = winner
-            if (win.symbol === 'X') return -1
-            return 1 
-        }
-        else if (draw){
-            return 0
-        }
+        if (winner) return winner[0].symbol === '0' ? 1 : -1 
+        else if (draw) return 0
 
         if(isMaximizing){  // Ai's turn
             let best_score = -Infinity
@@ -132,7 +126,7 @@ const Game = ({mode}) =>{
             for (let i = 0;i<9;i++){
                 if(flag[i]===null){
                     flag[i]='0'
-                    score = minimax(alpha,beta,false)
+                    score = minimax(flag,alpha,beta,false)
                     alpha = Math.max(alpha,score)
                     flag[i] = null
                     best_score = Math.max(best_score,score)
@@ -147,7 +141,7 @@ const Game = ({mode}) =>{
             for (let i = 0;i<9;i++){
                 if(flag[i]===null){
                     flag[i] = 'X'
-                    score = minimax(alpha,beta,true)
+                    score = minimax(flag,alpha,beta,true)
                     flag[i] = null
                     least_score = Math.min(least_score,score)
                     beta = Math.min(beta,score)
@@ -159,7 +153,7 @@ const Game = ({mode}) =>{
     }
 
     function hardLevel(){
-        console.log('hard mode')
+        // console.log('hard mode')
         let botChoice = null
         let best_score = -Infinity
         let score
@@ -167,12 +161,8 @@ const Game = ({mode}) =>{
         // First, check if AI can win immediately
         for (let i = 0;i<9;i++){
             if (flag[i]==null){
-                // manualy take place in the mid to avoid double attack
-                if (i===4 && flag[i]===null) return 5
                 flag[i]= '0'
-                if (checkWinner(false)){
-                    return i+1
-                }
+                if (checkWinner(false)) return i+1
                 flag[i] = null
             }
         }
@@ -181,9 +171,7 @@ const Game = ({mode}) =>{
         for (let i = 0;i<9;i++){
             if (flag[i]===null){
                 flag[i]= 'X'
-                if (checkWinner(false)){
-                    return i+1
-                }
+                if (checkWinner(false)) return i+1
                 flag[i] = null
             }
         }
@@ -192,8 +180,8 @@ const Game = ({mode}) =>{
 
         for (let i = 0;i<9;i++){
             if(flag[i]===null){
-                flag[i] = 'X'
-                score = minimax(-Infinity,Infinity,false)
+                flag[i] = '0'
+                score = minimax(flag,-Infinity,Infinity,false)
                 flag[i] = null
 
                 if (score > best_score){
