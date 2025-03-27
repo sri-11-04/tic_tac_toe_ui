@@ -44,12 +44,24 @@ const Game = ({mode}) =>{
     if (trigger && mode.toLowerCase().includes('single') && !winner){
         
         setTimeout(()=>botLogic(level),1000)
+        disable()
     }
 
     // disable the button click after the match is over
     function disable(){
         buttons.forEach(butt=>{
+            // console.log('disabled ',butt.name)
             butt.disabled = true
+        })
+    }
+
+    function enable(){
+        // console.log('enable called')
+        buttons.forEach(butt =>{
+            if(butt.innerText===''){
+                // console.log('enabled ',butt.name)
+                butt.disabled = false
+            }
         })
     }
 
@@ -279,6 +291,7 @@ const Game = ({mode}) =>{
                 return false
                 })
         }
+        enable()
  
     }
 
