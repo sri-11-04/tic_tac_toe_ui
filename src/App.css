@@ -114,12 +114,13 @@
     align-items: center;
     justify-content: center;
     .div-width{
-      height: 200px;
+      height: 220px;
     }
     div{
       padding: 20px;
-      height: 130px;
+      height: 150px;
       width: 30%;
+      gap: 5px;
       background-color: rgba(254, 254, 254, 0.4);
       border-radius: 20px;
       display: flex;
@@ -204,6 +205,20 @@ select{
 
 .green{
   color: var(--color-o);
+}
+
+#error{
+  /* margin: 5px 0; */
+  color: darkred;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  transition: all 0.2s ease-in;
+  text-align: center;
+}
+
+.error-hide{
+  opacity: 0;
 }
 
 .anime{

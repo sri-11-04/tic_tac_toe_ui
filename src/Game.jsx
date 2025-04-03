@@ -1,9 +1,12 @@
 // game component
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
+// import winnerSound_ from "./assets/winner-sound.mp3"
 
-const Game = ({mode}) =>{
+
+
+const Game = ({mode,sound,error_sound,gamePlay}) =>{
     const [players,setPlayers] = useState([]) //arr of obj stores playes name and symbol
     const [trigger,setTrigger] = useState(0) // to change from 0 to 1 ....
     const [playerScore,setPlayerScore] = useState({}) // stores an object of player : score
@@ -24,6 +27,16 @@ const Game = ({mode}) =>{
         [3,6,9]
     ]
 
+    // onclick sound for back and other butthons
+    const play_sound = ()=>sound.play()
+
+    // event handler error sound
+    const errorSound = () => {
+        // console.log('errsound')
+        error_sound.currentTime = 0.5
+        error_sound.play()
+    }
+
     // select board button
     const buttons = document.querySelectorAll('.bord-butt')
 
@@ -42,26 +55,31 @@ const Game = ({mode}) =>{
 
     // it triggers the bot to play
     if (trigger && mode.toLowerCase().includes('single') && !winner){
-        
-        setTimeout(()=>botLogic(level),1000)
+        setTimeout(()=>botLogic(level),1100)
         disable()
+    }
+
+    // disable all when no button is free
+    function disableAll(){
+        // console.log('disable all')
+        buttons.forEach(butt=>{
+            butt.disabled = true
+        })
     }
 
     // disable the button click after the match is over
     function disable(){
         buttons.forEach(butt=>{
-            // console.log('disabled ',butt.name)
-            butt.disabled = true
+            if (!butt.innerText){
+                butt.disabled = true
+            }
         })
     }
 
     function enable(){
         // console.log('enable called')
         buttons.forEach(butt =>{
-            if(butt.innerText===''){
-                // console.log('enabled ',butt.name)
-                butt.disabled = false
-            }
+            butt.disabled = false
         })
     }
 
@@ -95,11 +113,12 @@ const Game = ({mode}) =>{
         remove event and disable the targeted button
         adds the player symbol in the flag
         */
-        
+       if (e.target.innerText) errorSound()
+        else{
+            sound.play()
         e.target.classList.add(playerColor[trigger])
         e.target.innerText = players[trigger].symbol
-        e.target.removeEventListener('click', ButtonClick);
-        e.target.disabled = true
+        // e.target.disabled = true
         setTrackPlayer((prev)=>{
             let temp = [...prev[players[trigger].name].slice(),parseInt(e.target.name)]
             return {
@@ -116,13 +135,26 @@ const Game = ({mode}) =>{
         // draw checker
         if (flag.every(ele => ele !== null)) {
             setWinner('its a tie!');
-            disable()
+            disableAll()
+            const drawSound = new Audio(gamePlay.src)
+            drawSound.volume = 1
+            drawSound.currentTime = 76
+            drawSound.play()
+            const drawListener = ()=>{
+                if (Math.abs(drawSound.currentTime - 80)<0.2){
+                    drawSound.pause()
+                    drawSound.removeEventListener('timeupdate',drawListener)
+                }
+            }
+            drawSound.addEventListener('timeupdate',drawListener)
+            return
         }
 
         if (winOrRun()) return
         // triggering player1 and 2
         if (trigger) setTrigger(0)
         else setTrigger(1)
+        }
     }
 
     // minimax algo
@@ -269,8 +301,7 @@ const Game = ({mode}) =>{
                 if (index+1 == botChoice){
                         ele.innerText = players[trigger].symbol
                         ele.classList.add(playerColor[trigger])
-                        ele.removeEventListener('click', ButtonClick);
-                        ele.disabled = true
+                        // ele.disabled = true
                         flag[parseInt(ele.name) - 1] = players[trigger].symbol; // Update flag based on button index
                         setFlag(flag)
                         setTrackPlayer((prev)=>{
@@ -291,14 +322,15 @@ const Game = ({mode}) =>{
                 return false
                 })
         }
-        enable()
  
     }
 
     // reset everything except score
     const resetBoard = ()=>{
+        play_sound()
         setTrigger(0)
         setWinner('')
+        gamePlay.currentTime = 9.9
         buttons.forEach(butt=>{
             butt.classList.remove(playerColor[0])
             butt.classList.remove(playerColor[1])
@@ -314,6 +346,7 @@ const Game = ({mode}) =>{
 
     // onclick function that switches the player like player1 to player2 to own the x and first move
     const switchPlayers = () => {
+        play_sound()
         setPlayers((prevPlayers) => {
             const updatedPlayers = [
                 { ...prevPlayers[1], symbol: "X" }, 
@@ -333,19 +366,33 @@ const Game = ({mode}) =>{
             setWinner(`winner : ${win.name}`);
             playerScore[win.name]+=1
             setPlayerScore(playerScore)
-            disable()
+            disableAll()
+            let winningSound = new Audio(gamePlay.src)
+            winningSound.currentTime = 69
+            winningSound.volume = 1
+            winningSound.play()
+            const soundFunc = ()=>{
+                console.log()
+                if (Math.abs(winningSound.currentTime - 71)<0.1){
+                    winningSound.pause()
+                    winningSound.removeEventListener('timeupdate',soundFunc)
+                }
+            }
+            winningSound.addEventListener('timeupdate',soundFunc)
             return true; // Stop further execution
         }
+        // enable the disables buttons
+        enable()
         return false
     }
 
     return(
         <>
         {mode && <>
-            {mode.toLowerCase().includes('single') ? <FormSingle player1Name={players[0]} func={userName}/> : <FormMulty player1Name={players[0]} func={userName}/>}
+            {mode.toLowerCase().includes('single') ? <FormSingle player1Name={players[0]} userNameFunc={userName} play_sound={play_sound} errorSound={errorSound} gamePlay={gamePlay}/> : <FormMulty player1Name={players[0]} userNameFunc={userName} play_sound={play_sound} errorSound={errorSound} gamePlay={gamePlay}/>}
         <div>
             {mode.toLowerCase().includes('single') && (
-                <select disabled={!switchButt} onChange={levelChange} name="level" id="">
+                <select onClick={play_sound} disabled={!switchButt} onChange={levelChange} name="level" id="">
                     <option value="normal">Normal</option>
                     <option value="hard">Hard</option>
                 </select>
@@ -363,7 +410,7 @@ const Game = ({mode}) =>{
             {/* <h1>{player2Name} : {playerSymbol['player2']}</h1> */}
             <Board func={ButtonClick}/>
             <div className="retry-butt">
-                <Link to={'/'}><button className="first">back</button></Link>
+                <Link to={'/'}><button className="first" onClick={play_sound}>back</button></Link>
                 {mode.toLowerCase().includes('multi') && switchButt && <button onClick={switchPlayers} style={{'background':'grey'}}> switch </button>}
                 <button className={winner ? 'last anime' : 'last'} onClick={resetBoard}>reset board</button>
             </div>
@@ -377,8 +424,12 @@ const Game = ({mode}) =>{
 }
 
 // single player form component
-const FormSingle = ({func,player1Name})=>{
+const FormSingle = ({userNameFunc,player1Name,play_sound,errorSound,gamePlay})=>{
     const [player1,setPlayer1] = useState('')
+    const error = "pls enter your name before submitting"
+    const ptag = document.getElementById('error')
+    const [error_,setError_] = useState(true)
+    
 
     const handleChange = (e)=>{
         setPlayer1(e.target.value)
@@ -386,22 +437,46 @@ const FormSingle = ({func,player1Name})=>{
 
     const formSubmit = (e)=>{
         e.preventDefault()
-        func(player1)
+        if(!player1){
+            setError_(false)
+            errorSound()
+            setTimeout(()=>{
+                setError_(true)
+            },3000)
+            return 
+         }
+        userNameFunc(player1)
+        gamePlay.loop = true
+        gamePlay.currentTime = 9.9
+        gamePlay.play()
+        // event listener for timeupdate
+        gamePlay.addEventListener("timeupdate", () => {
+            // console.log('time =',gamePlay.currentTime)
+            // console.log(Math.abs(gamePlay.currentTime - 42),' ans')
+            if (Math.abs(gamePlay.currentTime - 42) < 0.8) {
+              gamePlay.currentTime = 9.9; // Reset to 10 seconds dynamically
+            }
+          });
+        play_sound()
     }
     return(
         <form onSubmit={formSubmit} className={player1Name ? 'form-move' : '' }>
             <div>
-                <input type="text" autoFocus placeholder="enter your name" value={player1} onInput={handleChange} required/>
-                <button type="submit">submit</button>
+                <input type="text" autoFocus placeholder="enter your name" value={player1} onInput={handleChange}/>
+                {error && <p id="error" className={error_ ? 'error-hide' : ''}>{error}</p>}
+                <button type="submit" >submit</button>
             </div>
         </form>
     )
 }
 
 // multi player form component
-const FormMulty = ({func,player1Name})=>{
+const FormMulty = ({userNameFunc,player1Name,play_sound,errorSound,gamePlay})=>{
     const [player1,setPlayer1] = useState('')
     const [player2,setPlayer2] = useState('')
+    const error = "pls enter player names before submitting"
+    const ptag = document.getElementById('error')
+    const [error_,setError_] = useState(true)
 
     const handleChange = (e)=>{
         if (e.target.id == '1'){
@@ -412,14 +487,35 @@ const FormMulty = ({func,player1Name})=>{
 
     const formSubmit = (e)=>{
         e.preventDefault()
-        func(player1,player2)
+        if (!player1 || !player2) {
+            setError_(false)
+            errorSound()
+            setTimeout(()=>{
+                setError_(true)
+            },3000)
+            return 
+        }
+        userNameFunc(player1,player2)
+        gamePlay.loop = true
+        gamePlay.currentTime = 9.9
+        gamePlay.play()
+        // event listener for timeupdate
+        gamePlay.addEventListener("timeupdate", () => {
+            // console.log('time =',gamePlay.currentTime)
+            // console.log(Math.abs(gamePlay.currentTime - 42),' ans')
+            if (Math.abs(gamePlay.currentTime - 42) < 0.8) {
+              gamePlay.currentTime = 9.9; // Reset to 10 seconds dynamically
+            }
+          });
+        play_sound()
     }
     return(
         <form onSubmit={formSubmit} className={player1Name ? 'form-move' : ''}>
             <div className="div-width">
-                <input id='1' type="text" placeholder="enter player 1 name" value={player1} onInput={handleChange} required autoFocus/>
-                <input id='2' type="text" placeholder="enter player 2 name" value={player2} onInput={handleChange} required/>
-                <button type="submit">submit</button>
+                <input id='1' type="text" placeholder="enter player 1 name" value={player1} onInput={handleChange} autoFocus/>
+                <input id='2' type="text" placeholder="enter player 2 name" value={player2} onInput={handleChange}/>
+                {error && <p id="error" className={error_ ? 'error-hide' : ''}>{error}</p>}
+                <button type="submit" >submit</button>
             </div>
         </form>
     )
