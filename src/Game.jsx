@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
-// import winnerSound_ from "./assets/winner-sound.mp3"
+import winnerSound_ from "./assets/winner-sound.mp3"
 
 
 
@@ -26,6 +26,8 @@ const Game = ({mode,sound,error_sound,gamePlay}) =>{
         [2,5,8],
         [3,6,9]
     ]
+
+    const winningSound = useRef(new Audio(winnerSound_))
 
     // onclick sound for back and other butthons
     const play_sound = ()=>sound.play()
@@ -367,18 +369,9 @@ const Game = ({mode,sound,error_sound,gamePlay}) =>{
             playerScore[win.name]+=1
             setPlayerScore(playerScore)
             disableAll()
-            let winningSound = new Audio(gamePlay.src)
-            winningSound.currentTime = 69
-            winningSound.volume = 1
-            winningSound.play()
-            const soundFunc = ()=>{
-                console.log()
-                if (Math.abs(winningSound.currentTime - 71)<0.1){
-                    winningSound.pause()
-                    winningSound.removeEventListener('timeupdate',soundFunc)
-                }
-            }
-            winningSound.addEventListener('timeupdate',soundFunc)
+            winningSound.current.currentTime = 0
+            winningSound.current.volume = 1
+            winningSound.current.play()
             return true; // Stop further execution
         }
         // enable the disables buttons
