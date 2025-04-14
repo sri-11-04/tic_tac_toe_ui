@@ -134,6 +134,10 @@ const Game = ({mode,sound,error_sound,gamePlay}) =>{
         //    at the start it will enable then disabled
             setSwithButt(null)
         } 
+
+        // winnchecker
+        if (winOrRun()) return
+
         // draw checker
         if (flag.every(ele => ele !== null)) {
             setWinner('its a tie!');
@@ -151,8 +155,6 @@ const Game = ({mode,sound,error_sound,gamePlay}) =>{
             drawSound.addEventListener('timeupdate',drawListener)
             return
         }
-
-        if (winOrRun()) return
         // triggering player1 and 2
         if (trigger) setTrigger(0)
         else setTrigger(1)
